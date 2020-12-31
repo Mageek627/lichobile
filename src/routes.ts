@@ -292,6 +292,12 @@ export default {
         })
       })
 
+      router.add('settings/stockfish', ({ params }) => {
+        import('./ui/settings/stockfish').then(m => {
+          onRouteMatch(m.default, params)
+        })
+      })
+
       router.add('teams', ({ params }) => {
         import('./ui/teams/teamsList').then(m => {
           onRouteMatch(m.default, params)

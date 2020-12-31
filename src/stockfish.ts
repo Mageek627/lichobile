@@ -1,6 +1,21 @@
-import { Capacitor, Plugins, WebPlugin, registerWebPlugin, PluginListenerHandle, ListenerCallback } from '@capacitor/core'
+import {
+  Capacitor,
+  Plugins,
+  WebPlugin,
+  registerWebPlugin,
+  PluginListenerHandle,
+  ListenerCallback,
+  FilesystemDirectory,
+  FileReadResult,
+} from '@capacitor/core'
 import { VariantKey } from './lichess/interfaces/variant'
 import { isVariant } from './lichess/variant'
+
+const { Filesystem } = Plugins
+
+// TODO change with release tag
+// const evalFileDownloadUrl = 'https://github.com/veloce/lichobile/releases/download/untagged-d0a2ac9381c497befad0'
+const evalFilename = 'nn-82215d0fd0df.nnue'
 
 // custom web plugin registration done here for now
 // because importing code from node_modules causes capacitor runtime code to
@@ -44,6 +59,10 @@ if (Capacitor.platform === 'web') {
       return 1024
     }
 
+    async getCPUArch(): Promise<string> {
+      return 'unknown'
+    }
+
     async start() {
       return new Promise((resolve) => {
         if (this.worker) {
@@ -84,10 +103,11 @@ if (Capacitor.platform === 'web') {
   registerWebPlugin(stockfishWeb)
 }
 
-export interface StockfishPlugin {
+interface StockfishPlugin {
   addListener(event: 'output', callback: (v: { line: string }) => void): void
   removeAllListeners(): void
   getMaxMemory(): Promise<{ value: number }>
+  getCPUArch(): Promise<{ value: string }>
   start(): Promise<void>
   cmd(options: { cmd: string }): Promise<void>
   exit(): Promise<void>
@@ -101,6 +121,9 @@ export class Stockfish {
   constructor(readonly variant: VariantKey) {
     // todo implem variant
     this.plugin = isVariant(variant) ? StockfishPlugin : StockfishPlugin
+
+    this.plugin.getCPUArch()
+    .then(({ value }) => console.log('cpuArch', value))
   }
 
   public addListener(callback: (line: string) => void) {
@@ -143,4 +166,18 @@ export function getMaxMemory(): Promise<number> {
 export function getNbCores(): number {
   const cores = window.deviceInfo.cpuCores
   return cores > 2 ? cores - 1 : 1
+}
+
+export function getEvalFile(): Promise<FileReadResult> {
+  return Filesystem.readFile({
+    path: evalFilename,
+    directory: FilesystemDirectory.Data
+  })
+}
+
+export function getEvalFileStat() {
+  return Filesystem.stat({
+    path: evalFilename,
+    directory: FilesystemDirectory.Data
+  })
 }

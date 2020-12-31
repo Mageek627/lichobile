@@ -157,6 +157,10 @@ export default {
     }
   },
 
+  stockfish: {
+    useNNUE: prop<boolean>('stockfish.useNNUE', false),
+  },
+
   ai: {
     availableOpponents: [
       ['Stockfish', '1'],

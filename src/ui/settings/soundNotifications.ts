@@ -1,3 +1,4 @@
+import h from 'mithril/hyperscript'
 import * as helper from '../helper'
 import { dropShadowHeader, backButton } from '../shared/common'
 import formWidgets from '../shared/form'
@@ -8,7 +9,15 @@ import i18n from '../../i18n'
 import settings from '../../settings'
 import sound from '../../sound'
 import vibrate from '../../vibrate'
-import h from 'mithril/hyperscript'
+
+export default {
+  oncreate: helper.viewSlideIn,
+
+  view() {
+    const header = dropShadowHeader(null, backButton(i18n('sound') + ' | ' + i18n('notifications')))
+    return layout.free(header, renderBody())
+  }
+}
 
 function renderBody() {
   return h('ul.native_scroller.page.settings_list.game', [
@@ -28,13 +37,4 @@ function renderBody() {
       }
     })),
   ])
-}
-
-export default {
-  oncreate: helper.viewSlideIn,
-
-  view() {
-    const header = dropShadowHeader(null, backButton(i18n('sound') + ' | ' + i18n('notifications')))
-    return layout.free(header, renderBody())
-  }
 }

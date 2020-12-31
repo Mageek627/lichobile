@@ -11,15 +11,7 @@ interface Attrs {
   disabled?: boolean
 }
 
-interface State {
-  value: boolean
-}
-
 export default {
-  oninit({ attrs }) {
-    this.value = attrs.prop()
-  },
-
   view({ attrs }) {
     return h('div.check_container', {
       className: attrs.disabled ? 'disabled' : ''
@@ -31,16 +23,15 @@ export default {
         id: attrs.name,
         name: attrs.name,
         disabled: attrs.disabled,
-        checked: this.value,
+        checked: attrs.prop(),
         onchange: () => {
-          this.value = !this.value
-          attrs.prop(this.value)
+          attrs.prop(!attrs.prop())
           if (attrs.callback) {
-            attrs.callback(this.value)
+            attrs.callback(attrs.prop())
           }
           redraw()
         }
       })
     ])
   },
-} as Mithril.Component<Attrs, State>
+} as Mithril.Component<Attrs, {}>

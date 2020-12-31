@@ -131,33 +131,36 @@ function download(
     const client = new XMLHttpRequest()
     const themePath = theme === 'bg' ? '/background' : '/board'
     client.open('GET', `${baseUrl}${themePath}/${fileName}`, true)
-      client.responseType = 'blob'
-      if (onProgress) {
-        client.onprogress = onProgress
-      }
-      client.onload = () => {
-        if (client.status === 200) {
-          const blob = client.response
-          if (blob) {
-            const reader = new FileReader()
-            reader.readAsDataURL(blob)
-            reader.onloadend = () => {
-              const base64data = reader.result as string
-              Filesystem.writeFile({
-                path: theme + '-' + fileName,
-                data: base64data,
-                directory: FilesystemDirectory.Data,
-              })
-              .then(() => resolve())
-            }
-          } else {
-            reject('could not get file')
+    client.responseType = 'blob'
+    if (onProgress) {
+      client.onprogress = onProgress
+    }
+    client.onload = () => {
+      if (client.status === 200) {
+        const blob = client.response
+        if (blob) {
+          const reader = new FileReader()
+          reader.readAsDataURL(blob)
+          reader.onloadend = () => {
+            const base64data = reader.result as string
+            Filesystem.writeFile({
+              path: theme + '-' + fileName,
+              data: base64data,
+              directory: FilesystemDirectory.Data,
+            })
+            .then(() => resolve())
           }
         } else {
-          reject(`Request returned ${client.status}`)
+          reject('could not get file')
         }
+      } else {
+        reject(`Request returned ${client.status}`)
       }
-      client.send()
+    }
+    client.onerror = (err) => {
+      reject(err)
+    }
+    client.send()
   })
 }
 
