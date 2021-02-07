@@ -18,7 +18,7 @@ export default class MsgCtrl {
   msgsPerPage = 100;
   canGetMoreSince?: Date;
   typing?: Typing;
-  socket: network.MessageSocket 
+  socket: network.MessageSocket
 
   constructor(data: MsgData) {
     this.data = data;

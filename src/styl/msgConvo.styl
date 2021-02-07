@@ -28,7 +28,7 @@
         flex-center-nowrap()
 
         flex 0 0 auto
-        font-size 1.4em
+        font-size 1.2em
 
         .utitle
           margin-right .7ch
@@ -50,10 +50,14 @@
 
       &__actions
         flex-center-nowrap()
+        align-self: stretch;
 
     &__action
-      &.button
-        padding .8em 1em
+      justify-content: center;
+      align-items center
+      align-self: stretch;
+      width: 45px;
+      font-size: 1.2em;
 
     &__reply
       flex-center-nowrap()
@@ -65,7 +69,7 @@
 
       @media only screen and (min-width 768px)
         border-left 1px borderColor solid
-      
+
       .view-container.light &
         border-color themeBgLightBorder
         background themeBgLightHeader
